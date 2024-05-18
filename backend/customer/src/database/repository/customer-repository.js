@@ -1,4 +1,4 @@
-const { CustomerModel, AddressModel } = require("../models");
+const { CustomerModel } = require("../models");
 const {
   APIError,
   BadRequestError,
@@ -25,8 +25,24 @@ class CustomerRepository {
       );
     }
   }
-
-
+  async UpdateCustomer({ id, update }) {
+    try {
+      const customer = await CustomerModel.findById(id);
+      if (customer) {
+        Object.keys(update).map((key) => {
+          customer[key] = update[key];
+        });
+        const customerResult = await customer.save();
+        return customerResult;
+      }
+    } catch (err) {
+      throw new APIError(
+        "API Error",
+        STATUS_CODES.INTERNAL_ERROR,
+        "Unable to Update Customer"
+      );
+    }
+  }
   async FindCustomer({ email }) {
     try {
       const existingCustomer = await CustomerModel.findOne({ email: email });

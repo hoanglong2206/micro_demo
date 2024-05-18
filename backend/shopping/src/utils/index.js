@@ -37,14 +37,18 @@ module.exports.GenerateSignature = async (payload) => {
   }
 };
 
+
 module.exports.ValidateSignature = async (req) => {
   try {
-    const signature = req.get("Authorization");
-    console.log(signature);
-    const payload = await jwt.verify(signature.split(" ")[1], APP_SECRET);
+    // const signature = req.get("Authorization");
+    // const payload = await jwt.verify(signature.split(" ")[1], APP_SECRET);
+    const token = req.cookies.jwt;
+    const payload = await jwt.verify(token, APP_SECRET);
+    
     req.user = payload;
     return true;
   } catch (error) {
+    console.log("====== Validate signature error ======");
     console.log(error);
     return false;
   }

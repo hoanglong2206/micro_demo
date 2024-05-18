@@ -24,7 +24,7 @@ class CustomerService {
 
         if (validPassword) {
           const token = await GenerateSignature({ email: existingCustomer.email, _id: existingCustomer._id });
-          return FormateData({ id: existingCustomer._id, token });
+          return FormateData({ customer: existingCustomer, token });
         }
       }
 
@@ -78,6 +78,22 @@ class CustomerService {
     } catch (err) {
       throw new APIError('Data Not found', err)
     }
+  }
+
+  async UpdateProfile({id, update}) {
+      
+      try {
+        if(update.password){
+          let salt = await GenerateSalt();
+          update.salt = salt;
+          update.password = await GeneratePassword(update.password, salt);
+        }
+        const existingCustomer = await this.repository.UpdateCustomer({ id, update });
+        return FormateData(existingCustomer);
+  
+      } catch (err) {
+        throw new APIError('Data Not found', err)
+      }
   }
 
   async GetShopingDetails(id) {

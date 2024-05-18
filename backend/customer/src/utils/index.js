@@ -2,8 +2,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const amqplib = require("amqplib");
-
 // const axios = require("axios");
+
+
 
 const { 
   APP_SECRET,
@@ -41,9 +42,11 @@ module.exports.GenerateSignature = async (payload) => {
 
 module.exports.ValidateSignature = async (req) => {
   try {
-    const signature = req.get("Authorization");
-    const payload = await jwt.verify(signature.split(" ")[1], APP_SECRET);
-    
+    // const signature = req.get("Authorization");
+    // const payload = await jwt.verify(signature.split(" ")[1], APP_SECRET);
+    const token = req.cookies.jwt;
+    const payload = await jwt.verify(token, APP_SECRET);
+   
     req.user = payload;
     return true;
   } catch (error) {

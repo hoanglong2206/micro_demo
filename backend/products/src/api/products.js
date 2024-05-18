@@ -2,21 +2,25 @@ const ProductService = require('../services/product-service');
 const { PublishMessage } = require("../utils");
 const { SHOPPING_BINDING_KEY, CUSTOMER_BINDING_KEY } = require("../config")
 const UserAuth = require('./middlewares/auth')
-
+const upload = require('./middlewares/multer')
+const uploadCloud = require('./middlewares/uploadCloud')
 module.exports = (app, channel) => {
     
     const service = new ProductService();
 
 
-    app.post('/product/create', async(req,res,next) => {
+    app.post('/product/create', upload.any(), uploadCloud.upload, async(req,res,next) => {
         
         try {
             // const { name, description, type, unit,price, available, suplier, banner } = req.body; 
-            const { name, description, category, unit, price, inStock, brand, imageCover, size }= req.body; 
+            let { name, description, category, unit, price, inStock, brand, imageCover, size }= req.body;
+            price = parseFloat(price);
+            //cái quantity nó ở sâu trong mảng object nên m lôi ra tự parse lại nha
             console.log(req.body);
             // validation
             const { data } =  await service.CreateProduct({ name, description, category, unit, price, inStock, brand, imageCover, size });
             return res.json(data);
+
             
         } catch (err) {
             next(err)    
