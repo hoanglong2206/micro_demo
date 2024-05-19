@@ -3,9 +3,9 @@ const { APIError, BadRequestError } = require("../../utils/app-errors");
 
 //Dealing with data base operations
 class ProductRepository {
-  async CreateProduct({name,description,category,unit,price,inStock,brand,imageCover,size}) {
+  async CreateProduct({name,description,category,unit,price,inStock,brand,imageCover,size, images}) {
     try {
-      const product = new ProductModel({name,description,category,unit,price,inStock,brand,imageCover,size});
+      const product = new ProductModel({name,description,category,unit,price,inStock,brand,imageCover,size, images});
 
       const productResult = await product.save();
       return productResult;

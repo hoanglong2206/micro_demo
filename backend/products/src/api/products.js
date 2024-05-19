@@ -2,165 +2,161 @@ const ProductService = require('../services/product-service');
 const { PublishMessage } = require("../utils");
 const { SHOPPING_BINDING_KEY, CUSTOMER_BINDING_KEY } = require("../config")
 const UserAuth = require('./middlewares/auth')
-const upload = require('./middlewares/multer')
-const uploadCloud = require('./middlewares/uploadCloud')
+
 module.exports = (app, channel) => {
-    
-    const service = new ProductService();
+
+  const service = new ProductService();
 
 
-    app.post('/product/create', upload.any(), uploadCloud.upload, async(req,res,next) => {
-        
-        try {
-            // const { name, description, type, unit,price, available, suplier, banner } = req.body; 
-            let { name, description, category, unit, price, inStock, brand, imageCover, size }= req.body;
-            price = parseFloat(price);
-            //cái quantity nó ở sâu trong mảng object nên m lôi ra tự parse lại nha
-            console.log(req.body);
-            // validation
-            const { data } =  await service.CreateProduct({ name, description, category, unit, price, inStock, brand, imageCover, size });
-            return res.json(data);
+  app.post('/product/create', async(req,res,next) => {
 
-            
-        } catch (err) {
-            next(err)    
-        }
-        
-    });
+    try {
+        // const { name, description, type, unit,price, available, suplier, banner } = req.body; 
+        const { name, description, category, unit, price, inStock, brand, imageCover, size, images }= req.body; 
+        console.log(req.body);
+        // validation
+        const { data } =  await service.CreateProduct({ name, description, category, unit, price, inStock, brand, imageCover, size, images });
+        return res.json(data);
 
-    app.get('/category/:category', async(req,res,next) => {
-        
-        const category = req.params.category;
-        
-        try {
-            const { data } = await service.GetProductsByCategory(category)
-            return res.status(200).json(data);
+    } catch (err) {
+        next(err)    
+    }
 
-        } catch (err) {
-            next(err)
-        }
+});
 
-    });
+  app.get('/category/:category', async (req, res, next) => {
 
-    app.get('/:id', async(req,res,next) => {
-        
-        const productId = req.params.id;
+    const category = req.params.category;
 
-        try {
-            const { data } = await service.GetProductDescription(productId);
-            return res.status(200).json(data);
+    try {
+      const { data } = await service.GetProductsByCategory(category)
+      return res.status(200).json(data);
 
-        } catch (err) {
-            next(err)
-        }
+    } catch (err) {
+      next(err)
+    }
 
-    });
+  });
 
-    app.post('/ids', async(req,res,next) => {
+  app.get('/:id', async (req, res, next) => {
 
-        try {
-            const { ids } = req.body;
-            const products = await service.GetSelectedProducts(ids);
-            return res.status(200).json(products);
-            
-        } catch (err) {
-            next(err)
-        }
-       
-    });
-     
-    app.put('/wishlist',UserAuth, async (req,res,next) => {
+    const productId = req.params.id;
 
-        const { _id } = req.user;
-        console.log(_id);
-        try {
-            const {data} =  await service.GetProcductPayload(_id, {productId: req.body._id}, 'ADD_TO_WISHLIST');
+    try {
+      const { data } = await service.GetProductDescription(productId);
+      return res.status(200).json(data);
 
-            PublishMessage(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));
-            
-            return res.status(200).json(data.data.product);
-        } catch (err) {
-            
-        }
-    });
-    
-    app.delete('/wishlist/:id',UserAuth, async (req,res,next) => {
+    } catch (err) {
+      next(err)
+    }
 
-        const { _id } = req.user;
-        const productId = req.params.id;
+  });
 
-        try {
-            const {data} =  await service.GetProcductPayload(_id, {productId}, 'REMOVE_FROM_WISHLIST');
+  app.post('/ids', async (req, res, next) => {
 
-            // PushlishCustomerService(data);
-            PublishMessage(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));
+    try {
+      const { ids } = req.body;
+      const products = await service.GetSelectedProducts(ids);
+      return res.status(200).json(products);
 
-            return res.status(200).json(data.data.product);
-        } catch (err) {
-            next(err)
-        }
-    });
+    } catch (err) {
+      next(err)
+    }
+
+  });
+
+  app.put('/wishlist', UserAuth, async (req, res, next) => {
+
+    const { _id } = req.user;
+    console.log(_id);
+    try {
+      const { data } = await service.GetProcductPayload(_id, { productId: req.body._id }, 'ADD_TO_WISHLIST');
+
+      PublishMessage(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));
+
+      return res.status(200).json(data.data.product);
+    } catch (err) {
+
+    }
+  });
+
+  app.delete('/wishlist/:id', UserAuth, async (req, res, next) => {
+
+    const { _id } = req.user;
+    const productId = req.params.id;
+
+    try {
+      const { data } = await service.GetProcductPayload(_id, { productId }, 'REMOVE_FROM_WISHLIST');
+
+      // PushlishCustomerService(data);
+      PublishMessage(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));
+
+      return res.status(200).json(data.data.product);
+    } catch (err) {
+      next(err)
+    }
+  });
 
 
-    app.put('/cart',UserAuth, async (req,res,next) => {
-        
-        const { _id } = req.user;
-        
-        try {   
-            const { data } = await service.GetProcductPayload(_id, {productId: req.body._id, qty: req.body.qty, size: req.body.size, color: req.body.color }, 'ADD_TO_CART');
-            
-            // PushlishCustomerService(data);
-            PublishMessage(channel, SHOPPING_BINDING_KEY, JSON.stringify(data));
+  app.put('/cart', UserAuth, async (req, res, next) => {
 
-            // PushlishShoppingService(data);
-            PublishMessage(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));
-            
-            const response = {
-                product: data.data.product,
-                unit: data.data.qty,
-            }
-    
-            return res.status(200).json(response);
-            
-        } catch (err) {
-            next(err)
-        }
-    });
-    
-    app.delete('/cart/:id',UserAuth, async (req,res,next) => {
+    const { _id } = req.user;
 
-        const { _id } = req.user;
-        const productId = req.params.id;
+    try {
+      const { data } = await service.GetProcductPayload(_id, { productId: req.body._id, qty: req.body.qty, size: req.body.size, color: req.body.color }, 'ADD_TO_CART');
 
-        try {
-            const { data } = await service.GetProcductPayload(_id, {productId}, 'REMOVE_FROM_CART');
-            // PushlishCustomerService(data);
-            PublishMessage(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));
+      // PushlishCustomerService(data);
+      PublishMessage(channel, SHOPPING_BINDING_KEY, JSON.stringify(data));
 
-            // PushlishShoppingService(data);
-            PublishMessage(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));
+      // PushlishShoppingService(data);
+      PublishMessage(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));
 
-            const response = {
-                product: data.data.product,
-                unit: data.data.qty,
-            }           
-            return res.status(200).json(response);
-        } catch (err) {
-            next(err)
-        }
-    });
+      const response = {
+        product: data.data.product,
+        unit: data.data.qty,
+      }
 
-    //get Top products and category
-    app.get('/', async (req,res,next) => {
-        //check validation
-        
-        try {
-            const { data } = await service.GetProducts();        
-            return res.status(200).json(data);
-        } catch (error) {    
-            next(err)
-        }
-        
-    });
-    
+      return res.status(200).json(response);
+
+    } catch (err) {
+      next(err)
+    }
+  });
+
+  app.delete('/cart/:id', UserAuth, async (req, res, next) => {
+
+    const { _id } = req.user;
+    const productId = req.params.id;
+
+    try {
+      const { data } = await service.GetProcductPayload(_id, { productId }, 'REMOVE_FROM_CART');
+      // PushlishCustomerService(data);
+      PublishMessage(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));
+
+      // PushlishShoppingService(data);
+      PublishMessage(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));
+
+      const response = {
+        product: data.data.product,
+        unit: data.data.qty,
+      }
+      return res.status(200).json(response);
+    } catch (err) {
+      next(err)
+    }
+  });
+
+  //get Top products and category
+  app.get('/', async (req, res, next) => {
+    //check validation
+
+    try {
+      const { data } = await service.GetProducts();
+      return res.status(200).json(data);
+    } catch (error) {
+      next(err)
+    }
+
+  });
+
 }
