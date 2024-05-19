@@ -49,3 +49,5 @@ export { columnsCustomer } from "./custom/CustomerColumn";
 export { default as CustomerTable } from "./custom/CustomerTable";
 export { columnsProduct } from "./custom/ProductColumn";
 export { default as ProductTable } from "./custom/ProductTable";
+
+export { default as Loader } from "./custom/Loader";

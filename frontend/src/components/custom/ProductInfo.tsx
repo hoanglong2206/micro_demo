@@ -1,6 +1,6 @@
 import { Rating } from "@mui/material";
 import { Button } from "@/components/ui/button";
-import { CircleCheck, Heart, ShoppingBag, ShoppingCart } from "lucide-react";
+import { Heart, ShoppingBag, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { Product } from "@/interfaces";
 import { ProductAction, ProductImages } from "@/components";
@@ -20,6 +20,8 @@ export type CartProductType = {
 interface ProductInfoProps {
   data: Product;
 }
+
+const tags = ["headphone", "electronics", "Apple"];
 
 const ProductInfo = ({ data }: ProductInfoProps) => {
   const [cartProduct, setCartProduct] = useState<CartProductType>({
@@ -52,8 +54,8 @@ const ProductInfo = ({ data }: ProductInfoProps) => {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <Rating name="rating" value={data.rating} precision={0.5} readOnly />
-          <div className="text-slate-400">{data.comments.length} reviews</div>
+          <Rating name="rating" value={5} precision={0.5} readOnly />
+          <div className="text-slate-400">{2} reviews</div>
         </div>
         <hr className="my-3" />
         <div className="flex items-center gap-x-2">
@@ -68,7 +70,7 @@ const ProductInfo = ({ data }: ProductInfoProps) => {
         </div>
         <div className="flex items-center gap-x-2">
           TAG:
-          {data.tags.map((tag) => (
+          {tags.map((tag) => (
             <Badge key={tag} variant="secondary">
               {tag}
             </Badge>

@@ -11,6 +11,9 @@ import {
 } from "@/components";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useNavigate, NavigateFunction } from "react-router-dom";
+import { RootState } from "@/context/store/store";
 
 interface NavbarProps {
   sidebarOpen: boolean;
@@ -18,6 +21,8 @@ interface NavbarProps {
 }
 
 const Navbar = ({ sidebarOpen, setSidebarOpen }: NavbarProps) => {
+  const auth = useSelector((state: RootState) => state.auth);
+  const navigate: NavigateFunction = useNavigate();
   return (
     <div className="sticky top-0 w-full max-w-[1920px] z-9 shadow-sm mx-auto xl:px-20 md:px-10 px-4 py-2 border-b bg-slate-100">
       <div className="flex items-center justify-between gap-x-8">
@@ -40,13 +45,18 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }: NavbarProps) => {
         <div className="flex items-center gap-x-3">
           <DarkModeButton />
 
-          <HoverNotification />
-
-          <HoverWishlist />
-
-          <HoverCart />
-
-          <DropdownUser />
+          {auth.token ? (
+            <>
+              <HoverNotification />
+              <HoverWishlist />
+              <HoverCart />
+              <DropdownUser />
+            </>
+          ) : (
+            <Button onClick={() => navigate("/auth/login")} variant={"outline"}>
+              Login
+            </Button>
+          )}
         </div>
       </div>
       <hr className="my-3 w-full" />

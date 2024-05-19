@@ -11,8 +11,43 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { CreditCard, Gift, Headset, Truck } from "lucide-react";
+import { useState, useEffect } from "react";
+import customAxios from "@/config/customAxios";
+import { Product } from "@/interfaces";
 
 const Home = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data: Product[] = [];
+        const res = await customAxios.get("/");
+        res.data.products.map((product: any) => {
+          data.push({
+            id: product._id,
+            name: product.name,
+            price: product.price,
+            imageCover: product.imageCover,
+            images: product.images,
+            category: product.category,
+            brand: product.brand,
+            size: product.size,
+            description: product.description,
+            inStock: product.inStock,
+            createdAt: product.createdAt,
+          });
+        });
+        setProducts(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  console.log(products);
+
   return (
     <>
       <Banner />
@@ -64,7 +99,7 @@ const Home = () => {
               </CarouselItem>
             </CarouselContent>
           </Carousel>
-          <CarouselProduct title="Popular Products" />
+          <CarouselProduct title="Popular Products" data={products} />
           <CarouselBrand />
           <CarouselBlog />
         </Container>

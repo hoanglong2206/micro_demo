@@ -14,6 +14,8 @@ import { AlignJustify, Tally4, X } from "lucide-react";
 import { ProductList } from "@/components";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import customAxios from "@/config/customAxios";
+import { Product } from "@/interfaces";
 
 const Shopping = () => {
   const [typeList, setTypeList] = useState<string>("grid-col");
@@ -58,6 +60,37 @@ const Shopping = () => {
     document.addEventListener("keydown", keyHandler);
     return () => document.removeEventListener("keydown", keyHandler);
   });
+
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data: Product[] = [];
+        const res = await customAxios.get("/");
+        res.data.products.map((product: any) => {
+          data.push({
+            id: product._id,
+            name: product.name,
+            price: product.price,
+            imageCover: product.imageCover,
+            images: product.images,
+            category: product.category,
+            brand: product.brand,
+            size: product.size,
+            description: product.description,
+            inStock: product.inStock,
+            createdAt: product.createdAt,
+          });
+        });
+        setProducts(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   return (
     <div className="grid xl:grid-cols-5 gap-4 xl:px-8 py-4 md:px-24 px-4">
@@ -313,7 +346,7 @@ const Shopping = () => {
             </RadioGroup>
           </div>
         </div>
-        <ProductList typeList={typeList} />
+        <ProductList typeList={typeList} data={products} />
       </div>
     </div>
   );
