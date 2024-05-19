@@ -2,16 +2,13 @@ export interface Product {
   id: string;
   name: string;
   brand: string;
-  tags: string[];
   description: string;
   price: number;
   category: string;
-  rating: number;
   inStock: boolean;
   size: Size[];
   imageCover: string;
   images: string[];
-  comments: Comments[];
   createdAt: string;
 }
 

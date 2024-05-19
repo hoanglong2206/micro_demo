@@ -6,8 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Bell, EyeOff, User } from "lucide-react";
 import { IoMaleFemale, IoMale, IoFemale } from "react-icons/io5";
 import { Container } from "@/components";
+import { useSelector } from "react-redux";
+import { RootState } from "@/context/store/store";
 
 const Profile = () => {
+  const { user } = useSelector((state: RootState) => state.auth);
   return (
     <>
       <Container>
@@ -20,7 +23,7 @@ const Profile = () => {
               <CardContent className="flex items-center justify-start xl:justify-center gap-x-4">
                 <Label htmlFor="avatar" className="relative cursor-pointer">
                   <img
-                    src={"https://i.pravatar.cc/150"}
+                    src={user.photo}
                     alt=""
                     className="w-32 h-32 border rounded-lg shadow-sm"
                   />
@@ -28,9 +31,9 @@ const Profile = () => {
                 <Input type="file" id="avatar" className="hidden" />
 
                 <div className="flex flex-col gap-y-2">
-                  <h1 className="text-2xl font-semibold">admin</h1>
+                  <h1 className="text-2xl font-semibold">{user.username}</h1>
                   <p className="text-base font-medium text-muted-foreground">
-                    example@gmail.com
+                    {user.email}
                   </p>
                   <Label
                     htmlFor="avatar"
@@ -94,7 +97,7 @@ const Profile = () => {
                         type="text"
                         id="firstName"
                         placeholder="First Name"
-                        defaultValue={"admin"}
+                        defaultValue={user.username}
                         className="focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
                       />
                     </div>
@@ -104,7 +107,7 @@ const Profile = () => {
                         type="text"
                         id="lastName"
                         placeholder="Last Name"
-                        defaultValue={"admin"}
+                        defaultValue={user.username}
                         className="focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
                       />
                     </div>
@@ -117,7 +120,7 @@ const Profile = () => {
                         id="username"
                         placeholder="Username"
                         name="username"
-                        defaultValue={"admin"}
+                        defaultValue={user.username}
                         className="focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
                       />
                     </div>
@@ -128,7 +131,7 @@ const Profile = () => {
                         id="email"
                         placeholder="Email"
                         name="email"
-                        defaultValue={"example@gmail.com"}
+                        defaultValue={user.email}
                         className="focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
                       />
                     </div>
@@ -141,7 +144,7 @@ const Profile = () => {
                         id="phone"
                         placeholder="Phone"
                         name="phone"
-                        defaultValue={"1234567890"}
+                        defaultValue={"0123456789"}
                         className="focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
                       />
                     </div>
@@ -163,7 +166,7 @@ const Profile = () => {
                     <Label htmlFor="gender">Gender</Label>
                     <RadioGroup
                       name="gender"
-                      defaultValue={"male"}
+                      defaultValue={user.gender}
                       className="flex items-center gap-x-10"
                     >
                       <div className="flex items-center space-x-2">

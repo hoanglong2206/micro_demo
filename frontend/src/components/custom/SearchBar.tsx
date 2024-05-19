@@ -30,7 +30,7 @@ const SearchBar = ({ visible }: SearchBarProps) => {
       }`}
     >
       <Input
-        id="searchValue"
+        id={visible ? "search" : "searchMobile"}
         defaultValue={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
         placeholder="Search"

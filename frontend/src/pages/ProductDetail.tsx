@@ -1,16 +1,43 @@
 import {
-  CarouselProduct,
   Container,
   ProductInfo,
   ProductNotFound,
   ProductReviews,
 } from "@/components";
-import { products } from "@/utils/products";
 import { useParams } from "react-router-dom";
+import { Product } from "@/interfaces";
+import customAxios from "@/config/customAxios";
+import { useEffect, useState } from "react";
 
 const ProductDetail = () => {
-  const { id } = useParams();
-  const product = products.find((product) => product.id === id);
+  const { id } = useParams<{ id: string }>();
+  const [product, setProduct] = useState<Product | null>(null);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await customAxios.get(`/${id}`);
+        const data: Product = {
+          id: res.data._id,
+          name: res.data.name,
+          price: res.data.price,
+          imageCover: res.data.imageCover,
+          images: res.data.images,
+          category: res.data.category,
+          brand: res.data.brand,
+          size: res.data.size,
+          description: res.data.description,
+          inStock: res.data.inStock,
+          createdAt: res.data.createdAt,
+        };
+        setProduct(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchProduct();
+  }, [id]);
+
   if (!product) {
     return <ProductNotFound />;
   }
@@ -24,9 +51,8 @@ const ProductDetail = () => {
           <p className="text-lg">{product.description}</p>
         </div>
         <hr className="my-10" />
-        <ProductReviews data={product} />
+        <ProductReviews />
         <hr className="my-10" />
-        <CarouselProduct title="Related Products" />
       </div>
     </Container>
   );

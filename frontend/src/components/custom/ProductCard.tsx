@@ -75,7 +75,7 @@ const ProductCard = ({ data }: ProductCardProps) => {
               {truncateText(data.name, 18)}
             </h4>
           </div>
-          <Rating name="rating" value={data.rating} precision={0.1} readOnly />
+          <Rating name="rating" value={4} precision={0.1} readOnly />
           <div className="flex items-center justify-between">
             <span className="text-lg font-semibold text-slate-800">
               {formatPrice(data.price)}
