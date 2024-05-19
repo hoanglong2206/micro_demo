@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Minus, Plus, Trash2 } from "lucide-react";
-import { tab } from "@/assets/shoppings";
 
 const CartItem = () => {
   return (
@@ -9,7 +8,13 @@ const CartItem = () => {
       <div className="justify-self-start flex gap-x-4 col-span-1 md:col-span-2">
         <Link to={"/product"}>
           <div className="relative aspect-square w-32">
-            <img src={tab} alt="image" className="object-contain" />
+            <img
+              src={
+                "https://images.unsplash.com/photo-1612838320302-3b3b3f1b3b3b"
+              }
+              alt="image"
+              className="object-contain"
+            />
           </div>
         </Link>
         <div className="md:flex flex-col justify-center gap-y-2 hidden">
