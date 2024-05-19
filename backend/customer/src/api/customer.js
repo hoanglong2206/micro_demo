@@ -1,6 +1,6 @@
 const CustomerService = require("../services/customer-service");
 const UserAuth = require("./middlewares/auth");
-const { SubcribeMessage } = require('../utils')
+const { SubcribeMessage } = require("../utils");
 module.exports = (app, channel) => {
   const service = new CustomerService();
 
@@ -8,8 +8,8 @@ module.exports = (app, channel) => {
 
   app.post("/signup", async (req, res, next) => {
     try {
-      const { username,email, password } = req.body;
-      const { data } = await service.SignUp({username, email, password});
+      const { username, email, password } = req.body;
+      const { data } = await service.SignUp({ username, email, password });
       return res.json(data);
     } catch (err) {
       next(err);
@@ -29,8 +29,8 @@ module.exports = (app, channel) => {
       };
       console.log(data);
       res.cookie("jwt", data.token, cookieOptions);
-      
-      return res.status(201).json({customer: data.customer});
+
+      return res.status(200).json({ user: data.customer, token: data.token });
     } catch (err) {
       next(err);
     }
@@ -59,7 +59,10 @@ module.exports = (app, channel) => {
   app.post("/update", UserAuth, async (req, res, next) => {
     try {
       const { _id } = req.user;
-      const { data } = await service.UpdateProfile({ id: _id, update: req.body });
+      const { data } = await service.UpdateProfile({
+        id: _id,
+        update: req.body,
+      });
       return res.json(data);
     } catch (err) {
       next(err);
