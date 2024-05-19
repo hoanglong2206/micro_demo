@@ -92,7 +92,7 @@ class CustomerRepository {
 
         if (wishlist.length > 0) {
           let isExist = false;
-          wishlist.map((item) => {
+          wishlist.forEach((item) => {
             if (item._id.toString() === product._id.toString()) {
               const index = wishlist.indexOf(item);
               wishlist.splice(index, 1);
@@ -130,13 +130,12 @@ class CustomerRepository {
           product: { _id, name, price, imageCover, size, color, brand },
           unit: qty,
         };
-
         let cartItems = profile.cart;
-
+        
         if (cartItems.length > 0) {
           let isExist = false;
-          cartItems.map((item) => {
-            if (item.product._id.toString() === product._id.toString()) {
+          cartItems.forEach((item) => {
+            if (item.product._id.toString() === cartItem.product._id.toString()) {
               if (isRemove) {
                 cartItems.splice(cartItems.indexOf(item), 1);
               } else {
@@ -152,7 +151,6 @@ class CustomerRepository {
         } else {
           cartItems.push(cartItem);
         }
-
         profile.cart = cartItems;
 
         const cartSaveResult = await profile.save();

@@ -41,7 +41,7 @@ class ShoppingRepository {
         let isExist = false;
         let cartItems = cart.items;
         if (cartItems.length > 0) {
-          cartItems.map((item) => {
+          cartItems.forEach((item) => {
             if (item.product._id.toString() === _id.toString()) {
               if (isRemove) {
                 cartItems.splice(cartItems.indexOf(item), 1);
