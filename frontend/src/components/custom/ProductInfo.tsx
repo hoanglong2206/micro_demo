@@ -3,18 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Heart, ShoppingBag, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { Product } from "@/interfaces";
-import { ProductAction, ProductImages } from "@/components";
+import { ProductAction, ProductImages, Loader } from "@/components";
 import { Badge } from "@/components/ui/badge";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { hideLoader, showLoader } from "@/context/slices/loader";
+import customAxios from "@/config/customAxios";
+import { addProductToCart } from "@/context/slices/cart";
+import { RootState } from "@/context/store/store";
 
 export type CartProductType = {
-  id: string;
-  name: string;
-  category: string;
-  brand: string;
-  price: number;
+  _id: string;
   size: string;
   color: string;
-  quantity: number;
+  qty: number;
 };
 
 interface ProductInfoProps {
@@ -25,94 +27,111 @@ const tags = ["headphone", "electronics", "Apple"];
 
 const ProductInfo = ({ data }: ProductInfoProps) => {
   const [cartProduct, setCartProduct] = useState<CartProductType>({
-    id: data.id,
-    name: data.name,
-    category: data.category,
-    brand: data.brand,
-    price: data.price,
+    _id: data.id,
     size: data.size[0].name,
     color: data.size[0].color[0].name,
-    quantity: 1,
+    qty: 1,
   });
 
-  const handleAddToCart = () => {
-    console.log(cartProduct);
+  const dispatch = useDispatch();
+  const loader = useSelector((state: RootState) => state.loader);
+  const cart = useSelector((state: RootState) => state.cart);
+
+  const handleAddToCart = async () => {
+    try {
+      console.log(cartProduct);
+      dispatch(showLoader());
+      const res = await customAxios.put("/cart", cartProduct);
+      setTimeout(() => {
+        dispatch(hideLoader());
+      }, 1000);
+
+      console.log(cart.cart.quantity);
+      if (res.status === 200) {
+        dispatch(addProductToCart({ quantity: res.data.unit }));
+        toast.success("Product added to cart");
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
 
   return (
-    <div className="lg:grid lg:grid-cols-2 lg:items-start gap-x-12 space-y-8">
-      <ProductImages data={data} />
-      <div className="flex flex-col gap-1 text-sm font-medium space-y-2">
-        <h2 className="text-3xl ">{cartProduct.name}</h2>
-        <hr className="my-3" />
-        <div className="flex items-center gap-2">
-          <span className="text-2xl font-semibold text-red-500">
-            ${cartProduct.price}
-          </span>
-          <span className="text-sm line-through ">
-            ${cartProduct.price + 50}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Rating name="rating" value={5} precision={0.5} readOnly />
-          <div className="text-slate-400">{2} reviews</div>
-        </div>
-        <hr className="my-3" />
-        <div className="flex items-center gap-x-2">
-          CATEGORY :
-          <span className="uppercase text-slate-400">
-            {cartProduct.category}
-          </span>
-        </div>
-        <div>
-          BRAND :
-          <span className="uppercase text-slate-400"> {cartProduct.brand}</span>
-        </div>
-        <div className="flex items-center gap-x-2">
-          TAG:
-          {tags.map((tag) => (
-            <Badge key={tag} variant="secondary">
-              {tag}
-            </Badge>
-          ))}
-        </div>
-        <div
-          className={`${
-            data?.inStock ? "text-teal-500" : "text-rose-500"
-          } uppercase `}
-        >
-          {data?.inStock ? "In stock" : "Out of stock"}
-        </div>
-        <hr className="my-3" />
-        <ProductAction
-          data={data}
-          cartProduct={cartProduct}
-          setCartProduct={setCartProduct}
-        />
-        <hr className="my-3" />
-        {/* <p className="flex items-center gap-x-2 text-teal-400 ">
+    <>
+      {loader.isLoading ? (
+        <Loader />
+      ) : (
+        <div className="lg:grid lg:grid-cols-2 lg:items-start gap-x-12 space-y-8">
+          <ProductImages data={data} />
+          <div className="flex flex-col gap-1 text-sm font-medium space-y-2">
+            <h2 className="text-3xl ">{data.name}</h2>
+            <hr className="my-3" />
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-semibold text-red-500">
+                ${data.price}
+              </span>
+              <span className="text-sm line-through ">${data.price + 50}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Rating name="rating" value={5} precision={0.5} readOnly />
+              <div className="text-slate-400">{2} reviews</div>
+            </div>
+            <hr className="my-3" />
+            <div className="flex items-center gap-x-2">
+              CATEGORY :
+              <span className="uppercase text-slate-400">{data.category}</span>
+            </div>
+            <div>
+              BRAND :
+              <span className="uppercase text-slate-400"> {data.brand}</span>
+            </div>
+            <div className="flex items-center gap-x-2">
+              TAG:
+              {tags.map((tag) => (
+                <Badge key={tag} variant="secondary">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+            <div
+              className={`${
+                data?.inStock ? "text-teal-500" : "text-rose-500"
+              } uppercase `}
+            >
+              {data?.inStock ? "In stock" : "Out of stock"}
+            </div>
+            <hr className="my-3" />
+            <ProductAction
+              data={data}
+              cartProduct={cartProduct}
+              setCartProduct={setCartProduct}
+            />
+            <hr className="my-3" />
+            {/* <p className="flex items-center gap-x-2 text-teal-400 ">
           <CircleCheck className="h-5 w-5" />
           <span className="text-base">Product added to cart</span>
         </p>
         <Button variant={"outline"} className="w-1/2 md:w-1/3">
           View Cart <ShoppingBag className="w-5 h-5 ml-2" />
         </Button> */}
-        <div className="flex items-center justify-evenly gap-x-8">
-          <Button onClick={handleAddToCart} className="w-1/3">
-            Add To Cart <ShoppingCart className="w-5 h-5 ml-2" />
-          </Button>
+            <div className="flex items-center justify-evenly gap-x-8">
+              <Button onClick={handleAddToCart} className="w-1/3">
+                Add To Cart <ShoppingCart className="w-5 h-5 ml-2" />
+              </Button>
 
-          <Button variant={"outline"} className="w-1/3">
-            Buy Now <ShoppingBag className="w-5 h-5 ml-2" />
-          </Button>
+              <Button variant={"outline"} className="w-1/3">
+                Buy Now <ShoppingBag className="w-5 h-5 ml-2" />
+              </Button>
 
-          <Button variant={"outline"} className="w-1/3">
-            Add to Wishlist
-            <Heart className="w-5 h-5 ml-2" />
-          </Button>
+              <Button variant={"outline"} className="w-1/3">
+                Add to Wishlist
+                <Heart className="w-5 h-5 ml-2" />
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

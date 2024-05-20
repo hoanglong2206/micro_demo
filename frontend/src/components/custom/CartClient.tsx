@@ -2,8 +2,13 @@
 // import { Button } from "../ui/button";
 // import { NavigateFunction, useNavigate } from "react-router-dom";
 import { CartCheckout, CartList } from "@/components";
+import { Cart } from "@/interfaces";
 
-const CartClient = () => {
+interface CartClientProps {
+  data: Cart;
+}
+
+const CartClient = ({ data }: CartClientProps) => {
   // const navigate: NavigateFunction = useNavigate();
   return (
     <>
@@ -22,8 +27,8 @@ const CartClient = () => {
       <div className="space-y-4">
         <h3 className="font-bold text-3xl">Shopping Cart</h3>
         <div className="grid grid-cols-1 lg:grid-cols-4 text-sm items-center gap-4">
-          <CartList />
-          <CartCheckout />
+          <CartList data={data} />
+          <CartCheckout data={data} />
         </div>
       </div>
     </>

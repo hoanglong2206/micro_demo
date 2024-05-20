@@ -63,9 +63,5 @@ export interface Order {
 }
 
 export interface Cart {
-  id: string;
-  userId: string;
   products: ProductCart[];
-  total: number;
-  createdAt: string;
 }

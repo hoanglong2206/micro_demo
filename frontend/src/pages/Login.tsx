@@ -27,9 +27,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/context/store/store";
 import { toast } from "react-toastify";
 import { hideLoader, showLoader } from "@/context/slices/loader";
+import { Loader } from "@/components";
 import customAxios from "@/config/customAxios";
 import { login } from "@/context/slices/auth";
-import { Loader } from "@/components";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -77,7 +77,7 @@ const Login = () => {
       setTimeout(() => {
         dispatch(hideLoader());
       }, 1000);
-      toast.error(error.response.data.message);
+      toast.error(error.message);
     }
   };
 

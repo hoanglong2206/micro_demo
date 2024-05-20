@@ -1,5 +1,3 @@
-"use client";
-
 import { Dialog, Transition } from "@headlessui/react";
 import { X } from "lucide-react";
 import { Fragment } from "react";

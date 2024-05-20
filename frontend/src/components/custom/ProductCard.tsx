@@ -8,6 +8,10 @@ import { Expand, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { CartProductType } from "./ProductInfo";
 import { ProductImages, ProductAction, CustomModal } from "@/components";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import customAxios from "@/config/customAxios";
+import { addProductToCart } from "@/context/slices/cart";
 
 interface ProductCardProps {
   data: Product;
@@ -17,18 +21,26 @@ const ProductCard = ({ data }: ProductCardProps) => {
   const navigate: NavigateFunction = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
   const [cartProduct, setCartProduct] = useState<CartProductType>({
-    id: data.id,
-    name: data.name,
-    category: data.category,
-    brand: data.brand,
-    price: data.price,
+    _id: data.id,
     size: data.size[0].name,
     color: data.size[0].color[0].name,
-    quantity: 1,
+    qty: 1,
   });
 
-  const handleAddToCart = () => {
-    console.log(cartProduct);
+  const dispatch = useDispatch();
+
+  const handleAddToCart = async () => {
+    try {
+      console.log(cartProduct);
+      const res = await customAxios.put("/cart", cartProduct);
+
+      if (res.status === 200) {
+        dispatch(addProductToCart({ quantity: res.data.cart.unit }));
+        toast.success("Product added to cart");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
   };
   return (
     <>

@@ -19,14 +19,14 @@ const ProductAction = ({
   const IncreaseQuantity = () => {
     setCartProduct({
       ...cartProduct,
-      quantity: cartProduct.quantity + 1,
+      qty: cartProduct.qty + 1,
     });
   };
 
   const DecreaseQuantity = () => {
     setCartProduct({
       ...cartProduct,
-      quantity: cartProduct.quantity - 1,
+      qty: cartProduct.qty - 1,
     });
   };
   return (
@@ -39,7 +39,7 @@ const ProductAction = ({
             setCartProduct({
               ...cartProduct,
               size: e,
-              quantity: 1,
+              qty: 1,
             })
           }
           className="flex items-center gap-x-2"
@@ -69,7 +69,7 @@ const ProductAction = ({
             setCartProduct({
               ...cartProduct,
               color: e,
-              quantity: 1,
+              qty: 1,
             })
           }
           className="flex items-center gap-x-2"
@@ -97,21 +97,21 @@ const ProductAction = ({
         <div className="flex gap-x-4 items-center text-base">
           <Button
             onClick={DecreaseQuantity}
-            disabled={cartProduct.quantity === 1}
+            disabled={cartProduct.qty === 1}
             size={"icon"}
             className="h-8 w-8"
             variant={"outline"}
           >
             <Minus className="h-4 w-4" />
           </Button>
-          <div>{cartProduct.quantity}</div>
+          <div>{cartProduct.qty}</div>
           <Button
             onClick={IncreaseQuantity}
             disabled={
               data.size
                 .find((size) => size.name === cartProduct.size)
                 ?.color.find((color) => color.name === cartProduct.color)
-                ?.quantity === cartProduct.quantity
+                ?.quantity === cartProduct.qty
             }
             size={"icon"}
             className="h-8 w-8"

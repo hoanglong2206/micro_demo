@@ -9,8 +9,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "../ui/separator";
+import { Cart, ProductCart } from "@/interfaces";
+import { formatPrice } from "@/lib/utils";
 
-const CartCheckout = () => {
+interface CartCheckoutProps {
+  data: Cart;
+}
+
+const CartCheckout = ({ data }: CartCheckoutProps) => {
   return (
     <div className="col-span-1 self-start">
       <h3 className="text-base font-semibold">Payment Information</h3>
@@ -36,18 +42,17 @@ const CartCheckout = () => {
           <div className="grid gap-3">
             <div className="font-semibold">Order Details</div>
             <ul className="grid gap-3">
-              <li className="flex items-center justify-between">
-                <span className="text-muted-foreground">
-                  Glimmer Lamps x <span>2</span>
-                </span>
-                <span>$250.00</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-muted-foreground">
-                  Aqua Filters x <span>1</span>
-                </span>
-                <span>$49.00</span>
-              </li>
+              {data.products.map((product: ProductCart) => (
+                <li
+                  key={product.id}
+                  className="flex items-center justify-between"
+                >
+                  <span className="text-muted-foreground">
+                    {product.name} x <span>{product.quantity}</span>
+                  </span>
+                  <span>{formatPrice(product.price * product.quantity)}</span>
+                </li>
+              ))}
             </ul>
             <Separator className="my-2" />
             <ul className="grid gap-3">
@@ -65,7 +70,16 @@ const CartCheckout = () => {
               </li>
               <li className="flex items-center justify-between font-semibold">
                 <span className="text-muted-foreground">Total</span>
-                <span>$329.00</span>
+                <span>
+                  {formatPrice(
+                    data.products.reduce(
+                      (acc: number, product: ProductCart) => {
+                        return acc + product.price * product.quantity;
+                      },
+                      0
+                    )
+                  )}
+                </span>
               </li>
             </ul>
           </div>

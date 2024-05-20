@@ -1,17 +1,24 @@
 import { CartItem } from "@/components";
 import { Button } from "@/components/ui/button";
+import { Cart } from "@/interfaces";
 
-const CartList = () => {
+interface CartListProps {
+  data: Cart;
+}
+
+const CartList = ({ data }: CartListProps) => {
   return (
     <div className="col-span-3">
       <h3 className="text-base font-semibold">
-        You have <span className=" text-gray-500">3 items</span> in cart
+        You have{" "}
+        <span className=" text-gray-500">{data.products.length} items</span> in
+        cart
       </h3>
       <hr className="my-3 w-full" />
       <div className="space-y-2">
-        <CartItem />
-        <CartItem />
-        <CartItem />
+        {data.products.map((product) => (
+          <CartItem key={product.id} data={product} />
+        ))}
       </div>
       <hr className="my-3 w-full" />
 

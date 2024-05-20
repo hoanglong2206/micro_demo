@@ -7,9 +7,12 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Link, useNavigate, NavigateFunction } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "@/context/store/store";
 
 const HoverCart = () => {
   const navigate: NavigateFunction = useNavigate();
+  const cart = useSelector((state: RootState) => state.cart);
   return (
     <HoverCard>
       <HoverCardTrigger
@@ -22,9 +25,11 @@ const HoverCart = () => {
           className="flex items-center rounded-full focus-visible:ring-0 focus-visible:ring-offset-0"
         >
           <ShoppingCart className="h-5 w-5" />
-          <span className="ml-2 text-sm font-medium text-gray-700 dark:text-white">
-            10
-          </span>
+          {cart.cart.quantity > 0 && (
+            <span className="ml-2 text-sm font-medium text-gray-700 dark:text-white">
+              {cart.cart.quantity}
+            </span>
+          )}
         </Button>
       </HoverCardTrigger>
       <HoverCardContent className="w-[280px] z-999" align="end">
