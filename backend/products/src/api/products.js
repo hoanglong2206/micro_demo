@@ -8,7 +8,7 @@ module.exports = (app, channel) => {
   const service = new ProductService();
 
 
-  app.post('/product/create', async(req,res,next) => {
+  app.post('/create', async(req,res,next) => {
 
     try {
         // const { name, description, type, unit,price, available, suplier, banner } = req.body; 

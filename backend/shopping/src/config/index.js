@@ -29,7 +29,7 @@ const brokerConfig  = {
   vhost: process.env.MESSAGE_BROKER_VHOST
 }
 let broker_url;
-broker_url = `amqp://${brokerConfig.username}:${brokerConfig.password}@${brokerConfig.host}:${brokerConfig.port}/${brokerConfig.vhost}`
+broker_url = `amqp://${brokerConfig.username}:${brokerConfig.password}@${brokerConfig.host}:${brokerConfig.port}/${brokerConfig.username}`
 module.exports = {
   PORT: process.env.PORT,
   DB_URL: db_url,
