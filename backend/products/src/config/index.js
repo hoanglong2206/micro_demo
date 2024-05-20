@@ -12,11 +12,12 @@ const dbConfig = {
   username: process.env.MONGODB_USERNAME,
   password: process.env.MONGODB_PASSWORD,
   host: process.env.MONGODB_HOST,
-  port: process.env.MONGODB_PORT, 
+  port: process.env.MONGODB_PORT,
+  collection: process.env.MONGODB_COLLECTION 
 }
 let db_url;
 if(dbConfig.username != ""){
-  db_url = `mongodb://${dbConfig.username}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}`
+  db_url = `mongodb://${dbConfig.username}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.collection}`
 }else{
   db_url = process.env.MONGODB_URI
 }
