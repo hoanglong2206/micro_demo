@@ -42,6 +42,7 @@ class ShoppingRepository {
         let cartItems = cart.items;
         if (cartItems.length > 0) {
           cartItems.forEach((item) => {
+            console.log(item)
             if (item.product._id.toString() === _id.toString()) {
               if (isRemove) {
                 cartItems.splice(cartItems.indexOf(item), 1);

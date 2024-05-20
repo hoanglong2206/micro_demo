@@ -1,12 +1,12 @@
 const dotEnv = require("dotenv");
 
-if (process.env.NODE_ENV.trim() !== 'prod') {
-  const configFile = `./.env.${process.env.NODE_ENV.trim()}`;
-  dotEnv.config({ path: configFile });
-} else {
-  dotEnv.config();
-}
-
+// if (process.env.NODE_ENV.trim() !== 'prod') {
+//   const configFile = `./.env.${process.env.NODE_ENV.trim()}`;
+//   dotEnv.config({ path: configFile });
+// } else {
+//   dotEnv.config();
+// }
+dotEnv.config()
 
 const dbConfig = {
   username: process.env.MONGODB_USERNAME,

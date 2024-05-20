@@ -134,7 +134,7 @@ module.exports = (app, channel) => {
       PublishMessage(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));
 
       // PushlishShoppingService(data);
-      PublishMessage(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));
+      PublishMessage(channel, SHOPPING_BINDING_KEY, JSON.stringify(data));
 
       const response = {
         product: data.data.product,
