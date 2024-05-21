@@ -8,6 +8,7 @@ import {
   ProductDetail,
   Shopping,
   Profile,
+  Order as OrderPage,
 } from "@/pages";
 import { DefaultLayout, AdminLayout } from "@/layouts";
 import { Customer, Product, Message, Order, Dashboard } from "@/pages/admin";
@@ -35,6 +36,14 @@ function App() {
           element={
             <UserProtect>
               <Profile />
+            </UserProtect>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <UserProtect>
+              <OrderPage />
             </UserProtect>
           }
         />

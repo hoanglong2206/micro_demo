@@ -65,3 +65,15 @@ export interface Order {
 export interface Cart {
   products: ProductCart[];
 }
+
+export interface CartCheckout {
+  orderId: string;
+  amount: number;
+  status: string;
+  items: [
+    {
+      product: ProductCart;
+    }
+  ];
+  createdAt: string;
+}

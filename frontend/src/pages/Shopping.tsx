@@ -67,7 +67,7 @@ const Shopping = () => {
     const fetchProducts = async () => {
       try {
         const data: Product[] = [];
-        const res = await customAxios.get("/");
+        const res = await customAxios.get("/product/");
         res.data.products.map((product: any) => {
           data.push({
             id: product._id,

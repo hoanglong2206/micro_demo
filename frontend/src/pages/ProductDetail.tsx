@@ -16,7 +16,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await customAxios.get(`/${id}`);
+        const res = await customAxios.get(`/product/${id}`);
         const data: Product = {
           id: res.data._id,
           name: res.data.name,
