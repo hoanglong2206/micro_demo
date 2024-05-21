@@ -1,5 +1,4 @@
 import { ShoppingCart } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   HoverCard,
@@ -9,6 +8,7 @@ import {
 import { Link, useNavigate, NavigateFunction } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/context/store/store";
+import cartEmptyImage from "@/assets/preview.png";
 
 const HoverCart = () => {
   const navigate: NavigateFunction = useNavigate();
@@ -33,21 +33,40 @@ const HoverCart = () => {
         </Button>
       </HoverCardTrigger>
       <HoverCardContent className="w-[280px] z-999" align="end">
-        <div className="flex justify-between space-x-4">
-          <Avatar>
-            <AvatarImage src="https://github.com/vercel.png" />
-            <AvatarFallback>VC</AvatarFallback>
-          </Avatar>
-          <Link className="flex flex-col gap-2.5" to="#">
-            <p className="text-sm">
-              <span className="text-black dark:text-white">
-                Edit your information in a swipe
-              </span>
-            </p>
-
-            <p className="text-xs">12 May, 2025</p>
-          </Link>
-        </div>
+        {cart.cart.products.length > 0 ? (
+          <>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base font-semibold">Shopping</h3>
+              <Link to="/cart" className="text-xs font-medium">
+                View Cart
+              </Link>
+            </div>
+            <div className="flex flex-col space-y-4">
+              {cart.cart.products.map((product) => (
+                <div key={product.id} className="flex items-center space-x-4">
+                  <img
+                    src={product.imageCover}
+                    alt={product.name}
+                    className="w-12 h-12 rounded-md"
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-gray-800 dark:text-white">
+                      {product.name}
+                    </span>
+                    <span className="text-sm font-semibold text-gray-800 dark:text-white">
+                      {product.quantity} x {product.price}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-col items-center space-y-4">
+            <img src={cartEmptyImage} alt="cart empty" className="w-40" />
+            <div className="text-xl">Your cart is empty</div>
+          </div>
+        )}
       </HoverCardContent>
     </HoverCard>
   );

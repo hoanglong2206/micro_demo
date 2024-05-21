@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { NotebookTabs, User2 } from "lucide-react";
+import { ShoppingBag, User2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useDispatch, useSelector } from "react-redux";
@@ -77,9 +77,9 @@ const DropdownUser = () => {
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link to="/orders" className="flex items-center gap-2.5">
-              <NotebookTabs className="w-5 h-5" />
+              <ShoppingBag className="w-5 h-5" />
               <span className="text-base font-medium text-black dark:text-white">
-                My Orders
+                Orders
               </span>
             </Link>
           </DropdownMenuItem>

@@ -5,10 +5,10 @@ import { useState } from "react";
 import { Product } from "@/interfaces";
 import { ProductAction, ProductImages, Loader } from "@/components";
 import { Badge } from "@/components/ui/badge";
-import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { hideLoader, showLoader } from "@/context/slices/loader";
 import customAxios from "@/config/customAxios";
+import { useDispatch, useSelector } from "react-redux";
 import { addProductToCart } from "@/context/slices/cart";
 import { RootState } from "@/context/store/store";
 
@@ -35,20 +35,33 @@ const ProductInfo = ({ data }: ProductInfoProps) => {
 
   const dispatch = useDispatch();
   const loader = useSelector((state: RootState) => state.loader);
-  const cart = useSelector((state: RootState) => state.cart);
 
   const handleAddToCart = async () => {
     try {
       console.log(cartProduct);
       dispatch(showLoader());
-      const res = await customAxios.put("/cart", cartProduct);
+      const res = await customAxios.put("/product/cart", cartProduct);
       setTimeout(() => {
         dispatch(hideLoader());
       }, 1000);
 
-      console.log(cart.cart.quantity);
       if (res.status === 200) {
-        dispatch(addProductToCart({ quantity: res.data.unit }));
+        dispatch(
+          addProductToCart({
+            quantity: res.data.unit,
+            product: {
+              id: res.data.product._id,
+              name: res.data.product.name,
+              brand: res.data.product.brand,
+              size: res.data.product.size,
+              color: res.data.product.color,
+              price: res.data.product.price,
+              imageCover: res.data.product.imageCover,
+              quantity: res.data.unit,
+            },
+          })
+        );
+        dispatch;
         toast.success("Product added to cart");
       }
     } catch (error: any) {

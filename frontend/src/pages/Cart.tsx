@@ -1,12 +1,15 @@
 import { CartClient, Container } from "@/components";
 import customAxios from "@/config/customAxios";
-import { Cart as CartType, ProductCart } from "@/interfaces";
-import { useState, useEffect } from "react";
+import { setCart } from "@/context/slices/cart";
+import { ProductCart } from "@/interfaces";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/context/store/store";
+import { Loader } from "@/components";
 
 const Cart = () => {
-  const [cart, setCart] = useState<CartType>({
-    products: [],
-  });
+  const dispatch = useDispatch();
+  const loader = useSelector((state: RootState) => state.loader);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -28,22 +31,31 @@ const Cart = () => {
           });
         });
 
-        setCart({ products });
+        const quantity = res.data.cart.reduce(
+          (acc: number, item: any) => acc + item.unit,
+          0
+        );
+
+        dispatch(setCart({ quantity: quantity, products: products }));
       } catch (error) {
         console.log(error);
       }
     };
 
     fetchCart();
-  }, []);
-
-  console.log(cart);
+  }, [dispatch]);
 
   return (
-    <Container>
-      <CartClient data={cart} />
-      <hr className="my-3" />
-    </Container>
+    <>
+      {loader.isLoading ? (
+        <Loader />
+      ) : (
+        <Container>
+          <CartClient />
+          <hr className="my-3" />
+        </Container>
+      )}
+    </>
   );
 };
 

@@ -10,7 +10,7 @@ const CartList = ({ data }: CartListProps) => {
   return (
     <div className="col-span-3">
       <h3 className="text-base font-semibold">
-        You have{" "}
+        You have
         <span className=" text-gray-500">{data.products.length} items</span> in
         cart
       </h3>

@@ -32,11 +32,26 @@ const ProductCard = ({ data }: ProductCardProps) => {
   const handleAddToCart = async () => {
     try {
       console.log(cartProduct);
-      const res = await customAxios.put("/cart", cartProduct);
+      const res = await customAxios.put("/product/cart", cartProduct);
 
       if (res.status === 200) {
-        dispatch(addProductToCart({ quantity: res.data.cart.unit }));
+        dispatch(
+          addProductToCart({
+            quantity: res.data.unit,
+            product: {
+              id: res.data.product._id,
+              name: res.data.product.name,
+              brand: res.data.product.brand,
+              size: res.data.product.size,
+              color: res.data.product.color,
+              price: res.data.product.price,
+              imageCover: res.data.product.imageCover,
+              quantity: res.data.unit,
+            },
+          })
+        );
         toast.success("Product added to cart");
+        setOpen(false);
       }
     } catch (error) {
       toast.error("Something went wrong");
