@@ -1,5 +1,4 @@
 const dotEnv = require("dotenv");
-const { collection } = require("../../../products/src/database/models/Product");
 
 // if (process.env.NODE_ENV.trim() !== 'prod') {
 //   const configFile = `./.env.${process.env.NODE_ENV.trim()}`;
@@ -11,27 +10,18 @@ dotEnv.config();
 
 
 const dbConfig = {
-  username: process.env.MONGODB_USERNAME,
-  password: process.env.MONGODB_PASSWORD,
   host: process.env.MONGODB_HOST,
-  port: process.env.MONGODB_PORT,
-  collection: process.env.MONGODB_COLLECTION 
+  collection: process.env.MONGODB_COLLECTION
 }
-let db_url;
-if(dbConfig.username != ""){
-  db_url = `mongodb://${dbConfig.username}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.collection}`
-}else{
-  db_url = process.env.MONGODB_URI
-}
+db_url = `mongodb://${dbConfig.host}/${dbConfig.collection}`;
+
 const brokerConfig  = {
-  username: process.env.MESSAGE_BROKER_USERNAME,
-  password: process.env.MESSAGE_BROKER_PASSWORD,
   host: process.env.MESSAGE_BROKER_HOST,
   port: process.env.MESSAGE_BROKER_PORT, 
-  vhost: process.env.MESSAGE_BROKER_VHOST
 }
-let broker_url;
-broker_url = `amqp://${brokerConfig.username}:${brokerConfig.password}@${brokerConfig.host}:${brokerConfig.port}/${brokerConfig.username}`
+let broker_url = `amqp://${brokerConfig.host}:${brokerConfig.port}`;
+
+
 module.exports = {
   PORT: process.env.PORT,
   DB_URL: db_url,

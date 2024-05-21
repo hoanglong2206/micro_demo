@@ -1,0 +1,70 @@
+version: '3.7'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - 27018:27017
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb/
+  
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.13-management-alpine
+    restart: always
+    # environment:
+    #   RABBITMQ_DEFAULT_USER: long
+    #   RABBITMQ_DEFAULT_PASS: longkg123A
+    ports:
+      # AMQP protocol port
+      - 5672:5672
+      # Management UI
+      - 15672:15672
+    
+  products:
+    image: products-img
+    container_name: products
+    ports:
+      - 8002:8002
+    restart: always
+    depends_on:
+      - "mongodb"
+      - "rabbitmq"
+    env_file:
+      - ./products/.env.dev
+  shopping:
+    image: shopping-img
+    container_name: shopping
+    ports:
+      - "8003:8003"
+    restart: always
+    depends_on:
+      - "mongodb"
+      - "rabbitmq"
+
+    env_file:
+      - ./shopping/.env.dev
+  customer:
+    image: customer-img
+    container_name: customer
+    ports:
+      - "8001:8001"
+    restart: always
+    depends_on:
+      - "mongodb"
+      - "rabbitmq"
+    
+    env_file:
+      - ./customer/.env.dev
+  
