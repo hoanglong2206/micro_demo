@@ -11,6 +11,7 @@ import customAxios from "@/config/customAxios";
 import { useDispatch, useSelector } from "react-redux";
 import { addProductToCart } from "@/context/slices/cart";
 import { RootState } from "@/context/store/store";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
 export type CartProductType = {
   _id: string;
@@ -34,13 +35,20 @@ const ProductInfo = ({ data }: ProductInfoProps) => {
   });
 
   const dispatch = useDispatch();
+  const navigate: NavigateFunction = useNavigate();
   const loader = useSelector((state: RootState) => state.loader);
+  const user = useSelector((state: RootState) => state.auth);
 
   const handleAddToCart = async () => {
     try {
-      console.log(cartProduct);
+      if (!user.token) {
+        toast.warning("Please login to add product to cart");
+        navigate("/auth/login");
+        return;
+      }
+
       dispatch(showLoader());
-      const res = await customAxios.put("/product/cart", cartProduct);
+      const res = await customAxios.put("/products/cart", cartProduct);
       setTimeout(() => {
         dispatch(hideLoader());
       }, 1000);

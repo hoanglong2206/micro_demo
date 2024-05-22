@@ -8,10 +8,11 @@ import { Expand, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { CartProductType } from "./ProductInfo";
 import { ProductImages, ProductAction, CustomModal } from "@/components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import customAxios from "@/config/customAxios";
 import { addProductToCart } from "@/context/slices/cart";
+import { RootState } from "@/context/store/store";
 
 interface ProductCardProps {
   data: Product;
@@ -28,11 +29,16 @@ const ProductCard = ({ data }: ProductCardProps) => {
   });
 
   const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.auth);
 
   const handleAddToCart = async () => {
     try {
-      console.log(cartProduct);
-      const res = await customAxios.put("/product/cart", cartProduct);
+      if (!user.token) {
+        toast.warning("Please login to add product to cart");
+        navigate("/auth/login");
+        return;
+      }
+      const res = await customAxios.put("/products/cart", cartProduct);
 
       if (res.status === 200) {
         dispatch(

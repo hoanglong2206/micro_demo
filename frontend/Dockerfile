@@ -2,9 +2,11 @@ FROM node:21-alpine as build
 
 WORKDIR /app
 
-COPY package.json .
+COPY package*.json .
 
-RUN npm install
+COPY tsconfig*.json .
+
+RUN npm ci
 
 COPY . .
 
@@ -17,7 +19,7 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 RUN rm -rf /usr/share/nginx/html/*
 
-COPY --from=build /app/dist /usr/share/nginx/html/
+COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 

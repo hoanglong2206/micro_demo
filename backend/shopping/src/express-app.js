@@ -4,10 +4,12 @@ const { shopping, appEvents } = require("./api");
 const HandleErrors = require("./utils/error-handler");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+const { CLIENT_URL } = require("./config");
+
 module.exports = async (app, channel) => {
   app.use(
     cors({
-      origin: "http://localhost:5173",
+      origin: CLIENT_URL,
       credentials: true,
     })
   );

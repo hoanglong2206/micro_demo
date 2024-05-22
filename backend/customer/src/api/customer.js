@@ -19,16 +19,15 @@ module.exports = (app, channel) => {
   app.post("/login", async (req, res, next) => {
     try {
       const { email, password } = req.body;
-
       const { data } = await service.SignIn({ email, password });
       const cookieOptions = {
-        expires: new Date(
-          Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000
-        ),
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         httpOnly: true,
       };
       console.log(data);
+      console.log(cookieOptions);
       res.cookie("jwt", data.token, cookieOptions);
+      console.log("pass");
 
       return res.status(200).json({ user: data.customer, token: data.token });
     } catch (err) {

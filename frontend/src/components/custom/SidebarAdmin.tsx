@@ -69,7 +69,7 @@ const SidebarAdmin = ({ sidebarOpen, setSidebarOpen }: SidebarAdminProps) => {
         <Link to="/">
           <div className="hover:opacity-75 transition flex justify-center items-center gap-x-2 ">
             <Icons.logo className="w-8 h-8" />
-            <p className="text-lg pb-1 font-medium">Demo App</p>
+            <p className="text-lg pb-1 font-medium">E-commerce</p>
           </div>
         </Link>
 

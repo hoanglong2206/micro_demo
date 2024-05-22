@@ -17,7 +17,7 @@ const CartItem = ({ data }: CartItemProps) => {
 
   const handleRemoveFromCart = async () => {
     try {
-      const res = await customAxios.delete(`/product/cart/${data.id}`);
+      const res = await customAxios.delete(`/products/cart/${data.id}`);
       if (res.status === 200) {
         dispatch(
           removeProductFromCart({ quantity: data.quantity, id: data.id })

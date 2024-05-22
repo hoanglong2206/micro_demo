@@ -86,7 +86,7 @@ const Register = () => {
       setTimeout(() => {
         dispatch(hideLoader());
       }, 1000);
-      toast.error(error.response.data.message);
+      toast.error(error.message);
     }
   };
   return (

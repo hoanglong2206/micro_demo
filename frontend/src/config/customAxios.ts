@@ -7,7 +7,7 @@ import axios, {
 } from "axios";
 
 const customAxios: AxiosInstance = axios.create({
-  baseURL: "http://localhost:8000/",
+  baseURL: "/api",
   withCredentials: true,
 });
 

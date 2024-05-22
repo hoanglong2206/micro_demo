@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   mongodb:
@@ -17,7 +17,6 @@ services:
       - 8081:8081
     environment:
       ME_CONFIG_MONGODB_URL: mongodb://mongodb/
-  
 
   rabbitmq:
     container_name: rabbitmq
@@ -31,9 +30,9 @@ services:
       - 5672:5672
       # Management UI
       - 15672:15672
-    
+
   products:
-    image: products-img
+    image: hoanglonguit2003/products-ms
     container_name: products
     ports:
       - 8002:8002
@@ -42,9 +41,9 @@ services:
       - "mongodb"
       - "rabbitmq"
     env_file:
-      - ./products/.env.dev
+      - ./products/.env
   shopping:
-    image: shopping-img
+    image: hoanglonguit2003/shopping-ms
     container_name: shopping
     ports:
       - "8003:8003"
@@ -54,9 +53,9 @@ services:
       - "rabbitmq"
 
     env_file:
-      - ./shopping/.env.dev
+      - ./shopping/.env
   customer:
-    image: customer-img
+    image: hoanglonguit2003/customer-ms
     container_name: customer
     ports:
       - "8001:8001"
@@ -64,7 +63,6 @@ services:
     depends_on:
       - "mongodb"
       - "rabbitmq"
-    
+
     env_file:
-      - ./customer/.env.dev
-  
+      - ./customer/.env

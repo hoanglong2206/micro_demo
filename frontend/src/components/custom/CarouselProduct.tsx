@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import ProductCard from "./ProductCard";
 import { Product } from "@/interfaces";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
 interface CarouselProductProps {
   title: string;
@@ -14,11 +15,12 @@ interface CarouselProductProps {
 }
 
 export default function CarouselProduct({ title, data }: CarouselProductProps) {
+  const navigate: NavigateFunction = useNavigate();
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="font-bold text-3xl">{title}</h3>
-        <Button variant={"outline"}>
+        <Button onClick={() => navigate("/shop")} variant={"outline"}>
           SEE ALL <ChevronRight className="w-5 h-5 ml-2" />
         </Button>
       </div>

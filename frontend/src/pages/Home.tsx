@@ -22,7 +22,7 @@ const Home = () => {
     const fetchProducts = async () => {
       try {
         const data: Product[] = [];
-        const res = await customAxios.get("/product");
+        const res = await customAxios.get("/products/");
         res.data.products.map((product: any) => {
           data.push({
             id: product._id,
