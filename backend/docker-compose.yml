@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.9"
 
 services:
   mongodb:
@@ -30,6 +30,19 @@ services:
       - 5672:5672
       # Management UI
       - 15672:15672
+
+  gateway:
+    image: hoanglonguit2003/gateway-ms
+    container_name: gateway
+    ports:
+      - 8000:8000
+    restart: always
+    depends_on:
+      - "customer"
+      - "products"
+      - "shopping"
+    env_file:
+      - ./gateway/.env
 
   products:
     image: hoanglonguit2003/products-ms
@@ -66,3 +79,4 @@ services:
 
     env_file:
       - ./customer/.env
+# docker compose up -d mongodb mongo-express rabbitmq products shopping customer

@@ -4,14 +4,12 @@ const jwt = require("jsonwebtoken");
 const amqplib = require("amqplib");
 // const axios = require("axios");
 
-
-
-const { 
+const {
   APP_SECRET,
   MESSAGE_BROKER_URL,
   EXCHANGE_NAME,
   QUEUE_NAME,
-  CUSTOMER_BINDING_KEY
+  CUSTOMER_BINDING_KEY,
 } = require("../config");
 
 //Utility functions
@@ -46,7 +44,7 @@ module.exports.ValidateSignature = async (req) => {
     // const payload = await jwt.verify(signature.split(" ")[1], APP_SECRET);
     const token = req.cookies.jwt;
     const payload = await jwt.verify(token, APP_SECRET);
-   
+
     req.user = payload;
     return true;
   } catch (error) {
@@ -64,9 +62,9 @@ module.exports.FormateData = (data) => {
   }
 };
 
-
 module.exports.CreateChannel = async () => {
   try {
+    console.log(MESSAGE_BROKER_URL);
     const connection = await amqplib.connect(MESSAGE_BROKER_URL);
     const channel = await connection.createChannel();
     await channel.assertExchange(EXCHANGE_NAME, "direct", false);
@@ -76,20 +74,18 @@ module.exports.CreateChannel = async () => {
   }
 };
 
-
-module.exports.SubcribeMessage = async(channel, service) => {
+module.exports.SubcribeMessage = async (channel, service) => {
   const appQueue = await channel.assertQueue(QUEUE_NAME);
-  
+
   channel.bindQueue(appQueue.queue, EXCHANGE_NAME, CUSTOMER_BINDING_KEY);
 
   channel.consume(appQueue.queue, (data) => {
-    console.log('recieved data');
+    console.log("recieved data");
     console.log(data.content.toString());
     service.SubscribeEvents(data.content.toString());
     channel.ack(data);
-  })
+  });
 };
-
 
 // module.exports.PublishMessage = async(channel, binding_key, msg) => {
 //   try{
@@ -98,5 +94,5 @@ module.exports.SubcribeMessage = async(channel, service) => {
 //   }catch(err){
 //     throw err;
 //   }
-  
+
 // };
