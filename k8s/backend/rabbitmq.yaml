@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-svc
+  namespace: message-broker
+spec:
+  selector:
+    app: rabbitmq
+  clusterIP: None
+  ports:
+    - name: queue
+      port: 5672
+      targetPort: queue
+      protocol: TCP
+    - name: mgmt
+      port: 15672
+      targetPort: mgmt
+      protocol: TCP
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rabbitmq
+  namespace: message-broker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rabbitmq
+  serviceName: "rabbitmq-svc"
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3.12.14-management-alpine
+          ports:
+          - name: queue
+            containerPort: 5672
+            protocol: TCP
+          - name: mgmt
+            containerPort: 15672
+            protocol: TCP
+          volumeMounts:
+          - name: rabbitmq-storage
+            mountPath: /var/lib/rabbitmq
+  volumeClaimTemplates:
+  - metadata:
+      name: rabbitmq-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi

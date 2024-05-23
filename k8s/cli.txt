@@ -1,0 +1,46 @@
+# Update kubeconfig
+aws eks update-kubeconfig --region us-east-1 --name httpb-da-EKSCluster --profile tmp
+
+# EKS apply
+kubectl apply -f .\general.yaml
+kubectl apply -f .\mongodb.yaml
+# Setup mongoDB
+kubectl exec -it mongodb-0 -c mongodb -n databases -- mongosh
+// Init replica set of Mongodb
+rs.initiate({"_id" : "rs0","members" : [{ "_id" : 0, "host" : "mongodb-0.mongodb-svc.databases.svc.cluster.local:27017", "priority": 2 },{ "_id" : 1, "host" : "mongodb-1.mongodb-svc.databases.svc.cluster.local:27017" },{ "_id" : 2, "host" : "mongodb-2.mongodb-svc.databases.svc.cluster.local:27017" }]});
+// Check status
+rs.status()
+
+// Create Tables
+// Create the databases
+customerdb = db.getSiblingDB( 'shopping_ms_customer' );
+productsdb = db.getSiblingDB( 'shopping_ms_products' );
+shoppingdb = db.getSiblingDB( 'shopping_ms_shopping' );
+customerdb.createCollection("nothing");
+productsdb.createCollection("nothing");
+shoppingdb.createCollection("nothing");
+###############
+kubectl apply -f .\ui-mongo.yaml
+kubectl apply -f .\rabbitmq.yaml
+kubectl apply -f .\ui-rabbitmq.yaml
+
+kubectl apply -f .\services-customer.yaml
+kubectl apply -f .\services-products.yaml
+kubectl apply -f .\services-shopping.yaml
+kubectl apply -f .\nginx.yaml
+
+kubectl apply -f .\frontend.yaml
+kubectl apply -f .\ingress.yaml
+
+# Destroy
+kubectl delete -f .\frontend.yaml
+kubectl delete -f .\ingress.yaml
+kubectl delete -f .\nginx.yaml
+kubectl delete -f .\services-customer.yaml
+kubectl delete -f .\services-products.yaml
+kubectl delete -f .\services-shopping.yaml
+kubectl delete -f .\rabbitmq.yaml
+kubectl delete -f .\mongo-express.yaml
+kubectl delete -f .\mongodb.yaml
+kubectl delete -f .\general.yaml
+

@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-svc
+  namespace: databases
+spec:
+  selector:
+    role: mongo
+    environment: test
+  clusterIP: None
+  ports:
+    - port: 27017
+      targetPort: 27017
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb
+  namespace: databases
+spec:
+  selector:
+    matchLabels:
+      role: mongo
+      environment: test
+  serviceName: "mongodb-svc"
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        role: mongo
+        environment: test
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mongodb
+        image: mongo:latest
+        ports:
+          - containerPort: 27017
+        command:
+          - mongod
+          - "--bind_ip_all"
+          - "--replSet"
+          - rs0
+        volumeMounts:
+        - name: mongodb-storage
+          mountPath: /data/db
+      - name: mongo-sidecar
+        image: cvallance/mongo-k8s-sidecar
+        env:
+          - name: MONGO_SIDECAR_POD_LABELS
+            value: "role=mongo,environment=test"
+  volumeClaimTemplates:
+  - metadata:
+      name: mongodb-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
